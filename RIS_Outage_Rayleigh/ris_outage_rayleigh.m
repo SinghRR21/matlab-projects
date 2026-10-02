@@ -63,6 +63,10 @@ thr      = gamma_th ./ rho;                % outage <=> |coef|^2 < gamma_th/rho
 fprintf('RIS outage simulation: R_th = %g bps/Hz (gamma_th = %.3f), %g trials\n', ...
         P.R_th, gamma_th, P.nTrials);
 
+% Direct-link-only baseline (no RIS), shared by Fig. 1 and Fig. 2
+Pdir_sim = sim_outage(0, 'none', Inf, thr, P);
+Pdir_ana = 1 - exp(-thr / P.beta_d);
+
 %% ------------------ Fig. 1: P_out vs SNR for several N ------------------
 nN   = numel(P.N_list);
 Psim = zeros(nN, numel(rho));
@@ -73,8 +77,6 @@ for n = 1:nN
     Psim(n,:) = sim_outage(N, 'ideal', Inf, thr, P);
     Pana(n,:) = ana_outage_ideal(N, thr, P);
 end
-Pdir_sim = sim_outage(0, 'none', Inf, thr, P);
-Pdir_ana = 1 - exp(-thr / P.beta_d);
 
 figure('Name','Outage vs SNR','Color','w'); hold on; grid on; box on;
 cols = lines(nN);
